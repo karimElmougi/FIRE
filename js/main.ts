@@ -16,11 +16,14 @@ const roiInput = $("#roi_input");
 const raisesInput = $("#raises_input");
 const inflationInput = $("#inflation_input");
 const estimateButton = $("#estimateButton");
+const detailsButton = $("#detailsButton");
 
 const yearsToFI = $("#yearsToFI");
 const assets = $("#assets");
 const annualFIIncome = $("#annualFIIncome");
 const annualExpenses = $("#annualExpenses");
+
+const resultsDiv = $("#bigNumbers");
 
 function startingSalary(): number {
     return Number(salaryInput.val());
@@ -159,10 +162,17 @@ class AnnualData {
 
 estimateButton.click(function () {
     Estimate();
+    resultsDiv.removeClass("hidden");
 });
 
+detailsButton.click(function (){
+    $("table").removeClass("hidden");
+});
+
+var years;
+
 function Estimate() {
-    let years = [new AnnualData()];
+    years = [new AnnualData()];
     let retirementYear;
     for (let i = 0; i < 45; i++) {
         let yearToAdd = AnnualData.calculateNextYear(years[i]);
@@ -175,7 +185,10 @@ function Estimate() {
     assets.text(toFormattedString(retirementYear.totalAssets));
     annualFIIncome.text(toFormattedString(retirementYear.retirementIncome));
     annualExpenses.text(toFormattedString(retirementYear.retirementCol));
-    createTable(years);
+
+    if($("table").length === 0){
+        createTable(years);
+    }
 }
 
 function createTable(tableData) {
@@ -200,6 +213,7 @@ function createTable(tableData) {
     table.appendChild(tableBody);
     document.body.appendChild(table);
     $("table").attr("border", "1");
+    $("table").addClass("hidden");
 }
 
 function toFormattedString(value: number): string {

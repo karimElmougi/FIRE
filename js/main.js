@@ -14,10 +14,12 @@ var roiInput = $("#roi_input");
 var raisesInput = $("#raises_input");
 var inflationInput = $("#inflation_input");
 var estimateButton = $("#estimateButton");
+var detailsButton = $("#detailsButton");
 var yearsToFI = $("#yearsToFI");
 var assets = $("#assets");
 var annualFIIncome = $("#annualFIIncome");
 var annualExpenses = $("#annualExpenses");
+var resultsDiv = $("#bigNumbers");
 function startingSalary() {
     return Number(salaryInput.val());
 }
@@ -121,9 +123,14 @@ var AnnualData = (function () {
 }());
 estimateButton.click(function () {
     Estimate();
+    resultsDiv.removeClass("hidden");
 });
+detailsButton.click(function () {
+    $("table").removeClass("hidden");
+});
+var years;
 function Estimate() {
-    var years = [new AnnualData()];
+    years = [new AnnualData()];
     var retirementYear;
     for (var i = 0; i < 45; i++) {
         var yearToAdd = AnnualData.calculateNextYear(years[i]);
@@ -136,7 +143,9 @@ function Estimate() {
     assets.text(toFormattedString(retirementYear.totalAssets));
     annualFIIncome.text(toFormattedString(retirementYear.retirementIncome));
     annualExpenses.text(toFormattedString(retirementYear.retirementCol));
-    createTable(years);
+    if ($("table").length === 0) {
+        createTable(years);
+    }
 }
 function createTable(tableData) {
     var table = document.createElement('table');
@@ -154,6 +163,7 @@ function createTable(tableData) {
     table.appendChild(tableBody);
     document.body.appendChild(table);
     $("table").attr("border", "1");
+    $("table").addClass("hidden");
 }
 function toFormattedString(value) {
     return value.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
