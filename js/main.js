@@ -63,7 +63,7 @@ var AnnualData = (function () {
     AnnualData.calculateNextYear = function (previousYear) {
         var nextYear = new AnnualData();
         nextYear.currentYear = previousYear.currentYear + 1;
-        nextYear.currentSalary = startingSalary() * Math.pow(annualRaise(), previousYear.currentYear - 1);
+        nextYear.currentSalary = startingSalary() * Math.pow(annualRaise(), previousYear.currentYear);
         nextYear.rrspContribution = Math.min(MAX_RRSP_PERCENTAGE * nextYear.currentSalary, MAX_RRSP_CONTRIBUTION);
         nextYear.taxableIncome = nextYear.currentSalary - nextYear.rrspContribution + previousYear.unregisteredAssets * (roi() - 1);
         nextYear.netIncome = AnnualData.netIncome(nextYear.taxableIncome, nextYear.currentYear, inflationRate());
@@ -143,9 +143,10 @@ function Estimate() {
     assets.text(toFormattedString(retirementYear.totalAssets));
     annualFIIncome.text(toFormattedString(retirementYear.retirementIncome));
     annualExpenses.text(toFormattedString(retirementYear.retirementCol));
-    if ($("table").length === 0) {
-        createTable(years);
+    if ($("table").length !== 0) {
+        $("table").remove();
     }
+    createTable(years);
 }
 function createTable(tableData) {
     var table = document.createElement('table');
